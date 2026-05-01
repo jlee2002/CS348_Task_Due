@@ -141,9 +141,9 @@ app.get("/tasks/filter", (req, res) => {
 
 app.get("/categories", (req, res) => {
   const sql = `
-    SELECT DISTINCT category
-    FROM tasks
-    ORDER BY category
+    SELECT name AS category
+    FROM categories
+    ORDER BY name
   `;
 
   db.query(sql, (err, results) => {
