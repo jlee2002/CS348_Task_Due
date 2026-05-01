@@ -60,6 +60,7 @@ function TasksPage() {
   const [editStatus, setEditStatus] = useState<"Not Started" | "In Progress" | "Completed">("Not Started");
   const [editPriority, setEditPriority] = useState<"Low" | "Medium" | "High">("Medium");
   const [categories, setCategories] = useState<string[]>([]);
+  const [loadingCategories, setLoadingCategories] = useState(true);
 
   useEffect(() => { //run this code when it first loads the page, and only then
     async function fetchTasks() {
@@ -90,7 +91,7 @@ function TasksPage() {
     }
     async function fetchCategories() {
       try {
-        const response = await fetch("http://localhost:3000/categories");
+        const response = await fetch("https://cs348-task-due.onrender.com/categories");
 
         if (!response.ok) {
           throw new Error("Failed to fetch categories");
@@ -98,8 +99,10 @@ function TasksPage() {
 
         const data = await response.json();
         setCategories(data.map((row: any) => row.category));
+        setLoadingCategories(false);
       } catch (error) {
         console.error("Error loading categories:", error);
+        setLoadingCategories(false);
       }
 }
 
@@ -127,7 +130,7 @@ function TasksPage() {
     };
 
     try {
-      const response = await fetch("http://localhost:3000/tasks", { // sends a request to backend
+      const response = await fetch("https://cs348-task-due.onrender.com/tasks", { // sends a request to backend
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -188,7 +191,7 @@ function TasksPage() {
 
   try {
     const response = await fetch( // uses HTTP method PUT to update the task in the backend
-      `http://localhost:3000/tasks/${editingTaskId}`,
+      `https://cs348-task-due.onrender.com/tasks/${editingTaskId}`,
       {
         method: "PUT",
         headers: {
@@ -220,7 +223,7 @@ function TasksPage() {
 
   async function handleDeleteTask(taskId: number) { 
   try {
-    const response = await fetch(`http://localhost:3000/tasks/${taskId}`, {
+    const response = await fetch(`https://cs348-task-due.onrender.com/tasks/${taskId}`, {
       method: "DELETE",
     });
 
@@ -244,7 +247,7 @@ function TasksPage() {
 
   try {
     const response = await fetch(
-      `http://localhost:3000/tasks/filter?${params.toString()}`
+      `https://cs348-task-due.onrender.com/tasks/filter?${params.toString()}`
     );
 
     if (!response.ok) {
@@ -272,7 +275,7 @@ function TasksPage() {
 
 async function handleResetFilters() {
   try {
-    const response = await fetch("http://localhost:3000/tasks");
+    const response = await fetch("https://cs348-task-due.onrender.com/tasks");
 
     if (!response.ok) {
       throw new Error("Failed to fetch tasks");
@@ -371,11 +374,15 @@ async function handleResetFilters() {
                     onChange={(e) => setCategory(e.target.value)}
                     className="w-full border rounded-md px-3 py-2"
                   >
-                    {categories.map((cat) => (
-                      <option key={cat} value={cat}>
-                        {cat}
-                      </option>
-                    ))}
+                    {loadingCategories ? (
+                      <option value="">Loading...</option>
+                    ) : (
+                      categories.map((cat) => (
+                        <option key={cat} value={cat}>
+                          {cat}
+                        </option>
+                      ))
+                    )}
                   </select>
                 </div>
 
@@ -470,11 +477,15 @@ async function handleResetFilters() {
                     onChange={(e) => setEditCategory(e.target.value)}
                     className="w-full border rounded-md px-3 py-2"
                   >
-                    {categories.map((cat) => (
-                      <option key={cat} value={cat}>
-                        {cat}
-                      </option>
-                    ))}
+                    {loadingCategories ? (
+                      <option value="">Loading...</option>
+                    ) : (
+                      categories.map((cat) => (
+                        <option key={cat} value={cat}>
+                          {cat}
+                        </option>
+                      ))
+                    )}
                   </select>
                 </div>
 
