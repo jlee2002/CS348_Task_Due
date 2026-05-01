@@ -64,7 +64,7 @@ function TasksPage() {
   useEffect(() => { //run this code when it first loads the page, and only then
     async function fetchTasks() {
       try {
-        const response = await fetch("http://localhost:3000/tasks"); // sends a request to backend
+        const response = await fetch("https://cs348-task-due.onrender.com/tasks"); // sends a request to backend
          
         if (!response.ok) {
           throw new Error("Failed to fetch tasks");
